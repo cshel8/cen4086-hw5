@@ -1,0 +1,15 @@
+Part 1 Screenshot)
+Labeled BusinessPoliciesScreenshot in screenshot folder
+
+Part 1 Number 4)
+human -> AI host -> MCP client == stdio / JSON-RPC == MCP server (meeple-harbor-support) -> policies.json, customer-note.txt
+                discovers resources (business://policies, business://customer-note/security-test),
+                tools (get_order_status, get_ticket, create_support_ticket),
+                and prompts (resolve_support_case) at runtime
+
+MCP exposes the interface, such as a resource or a tool. The embedding model 
+and vector store from HW3 would be regular application code on the server 
+that implements that interface. The AI host is still responsible for 
+generating the response, so MCP is really just the connection between the 
+application and the AI instead of handling the generation itself.
+
