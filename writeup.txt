@@ -13,3 +13,50 @@ that implements that interface. The AI host is still responsible for
 generating the response, so MCP is really just the connection between the 
 application and the AI instead of handling the generation itself.
 
+Part 3)
+Bad shape: orderId "1001" -> MCP error -32602 (Input validation error): 
+orderId failed regex /^ORD-\d{4}$/. Rejected by the generated schema before 
+create_support_ticket's handler ran (protocol-level error, not an {ok:false} 
+result). tickets.json unchanged.
+Plausible but absent: Passed validation and reached business logic but got 
+rejected because it's not a real order.
+No approval: This gives the expected result of CONFIRMATION_REQUIRED.
+Prompt injection:  It gives the same result as No approval proving that the 
+resource text has no authority.
+Approved action: This worked correctly a ticked was actually created. This is 
+the first time tickets.json actually changed.
+Read it back: This worked correctly it returned the tickedId correctly with the 
+ok: true.
+
+data/audit.jsonl includes the event and IDs but not the customer issue.
+
+Part 4 number 2)
+Screenshot is PromptPreviewScreenshot in screenshots folder.
+
+Part 4 number 3)
+tool-schema screenhot is in screenhots folder. 
+Part 4 number 3 part 2)
+Zod or schema constraints are used to validate a single input field by checking 
+things like the type, format, or length before the tool runs. Business logic 
+constraints are different because they depend on the application's data or rules, 
+such as checking if an order exists, if something is true for a specific user, 
+or what actions should happen. Because of that, they have to be handled inside 
+the tool itself.
+
+Part 4 number 4)
+Without MCP, there would be 12 custom adapters because there are 3 AI clients 
+and 4 business capability servers (3 × 4 = 12). Each client would need its own 
+custom integration for each server.
+
+With MCP, there would only be 7 protocol implementations because each of the 3 
+clients only has to implement the MCP client once, and each of the 4 servers 
+only has to implement the MCP server once (3 + 4 = 7). This removes the need to 
+build a separate adapter for every client-server pair.
+
+A rewritten order database can leave every client unchanged because the clients 
+do not communicate with the database directly. Instead, they call a tool using 
+its name, schema, and documented meaning. As long as those stay the same, the 
+server can completely change how the database works without affecting the 
+clients. The clients still create a runtime connection to the server, but MCP 
+eliminates the need for custom integration code between every client and server, 
+not the connection itself.

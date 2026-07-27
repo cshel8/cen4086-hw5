@@ -1,2 +1,9 @@
-[]
-
+[
+  {
+    "ticketId": "TKT-F17B64C8",
+    "orderId": "ORD-1001",
+    "issue": "My shipment has not moved for three days.",
+    "status": "open",
+    "createdAt": "2026-07-26T23:19:10.973Z"
+  }
+]

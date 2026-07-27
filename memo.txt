@@ -1,0 +1,64 @@
+MCP Design Memo – Meeple Harbor Support Server
+
+1. Classifying Requests
+Answered from the policy documents
+
+"What are your café table fees?"
+
+This can be answered from the policy document because the table fees are already 
+listed there. No customer information needs to be looked up.
+
+"Can I return an unopened game I bought last week?"
+
+This can also be answered from the Return Policy since it explains the return 
+rules. No tools are needed.
+
+Needs a read tool
+
+"What's the status of my order ORD-1002?"
+
+This uses get_order_status because the order information is stored in the 
+database, not in the policy documents.
+
+"Has anyone responded to my ticket TKT-4F2A9C1B?"
+
+This uses get_ticket because the ticket status has to be looked up.
+
+Needs a write tool
+
+"My game is missing cards. I'd like a replacement."
+
+This should use create_support_ticket because it creates a new support ticket.
+
+"I never received my shipping confirmation. Please open a ticket."
+
+This also uses create_support_ticket because the customer is asking to create a 
+new support request.
+
+2. Three Enforcement Layers
+
+Schema validation checks that the input is in the correct format. For example, 
+an order ID without the ORD- prefix would be rejected.
+
+Server business rules check that the data is actually valid. For example, an 
+order ID might have the correct format but still not exist.
+
+Host or human approval makes sure write actions are approved before they happen. 
+Even if everything else is valid, a support ticket cannot be created without 
+approval.
+
+3. What MCP Does
+
+MCP standardizes how the AI and the server communicate. It defines how tools and 
+resources are used and how requests and responses are sent.
+
+MCP does not provide the AI model, a RAG index, authentication, a database, or 
+automatic trust. Those all have to be provided by the application itself.
+
+4. Pre-Approval vs. Confirmation
+
+The get_order_status and get_ticket tools can be pre-approved because they only 
+read information and do not change anything.
+
+The create_support_ticket tool should always require confirmation because it 
+creates a permanent record and may store personal information.
